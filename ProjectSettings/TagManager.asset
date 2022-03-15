@@ -41,3 +41,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Box
+    uniqueID: 2572605273
+    locked: 0
+  - name: Player
+    uniqueID: 1977267309
+    locked: 0
+  - name: Square
+    uniqueID: 3624754891
+    locked: 0
+  - name: Text
+    uniqueID: 589367839
+    locked: 0
