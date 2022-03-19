@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -53,10 +53,13 @@
     <UnityVersion>2021.1.19f1c1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Assets\Scripts\Manager\MapManager.cs" />
     <Compile Include="Assets\Scripts\Helper\InputHelper.cs" />
     <Compile Include="Assets\Scripts\Entity\Box.cs" />
-    <Compile Include="Assets\Scripts\Manager\SquareManager.cs" />
+    <Compile Include="Assets\Scripts\Lattice.cs" />
     <Compile Include="Assets\Scripts\Entity\Player.cs" />
     <Compile Include="Assets\Scripts\Test.cs" />
     <Compile Include="Assets\Scripts\Entity\SquareBoundary.cs" />
@@ -64,12 +67,13 @@
     <Compile Include="Assets\Scripts\Entity\Square.cs" />
     <Compile Include="Assets\Scripts\Entity\SquareUnit.cs" />
     <Compile Include="Assets\Scripts\Entity\Entity.cs" />
+    <Compile Include="Assets\Scripts\Manager\BoundaryManager.cs" />
     <Compile Include="Assets\Scripts\Helper\Utils.cs" />
     <Compile Include="Assets\Scripts\ScriptableObject\ColorSO.cs" />
     <Compile Include="Assets\Scripts\Manager\BuildManager.cs" />
     <Compile Include="Assets\Scripts\Map\Grid.cs" />
-    <Compile Include="Assets\Scripts\Entity\BoundaryDirection.cs" />
     <Compile Include="Assets\Scripts\Interface\IMoveChecker.cs" />
+    <Compile Include="Assets\Scripts\Entity\BoundaryDirection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Package\TextMesh Pro\Shaders\TMPro.cginc" />

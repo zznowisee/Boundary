@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Square : MonoBehaviour
+public class Square : Entity
 {
-    private Point lowerLeftPoint;
+    private Unit lowerLeftUnit;
     private Vector2Int squareSize;
-    private List<SquareUnit> squareUnits;
-    private List<Box> boxes;
     private Transform squareUnitsHolder;
     private Transform squareBoundariesHolder;
     [SerializeField] private Color color;
     [SerializeField] private SquareBoundary pfSquareBoundary;
     [SerializeField] private SquareUnit pfSquareUnit;
+    [HideInInspector] public List<SquareBoundary> squareBoundaries;
 
     public event Action<Direction> OnMove;
 
@@ -21,41 +20,39 @@ public class Square : MonoBehaviour
     {
         squareUnitsHolder = transform.Find("squareUnitsHolder");
         squareBoundariesHolder = transform.Find("squareBoundariesHolder");
-        squareUnits = new List<SquareUnit>();
-        boxes = new List<Box>();
+        squareBoundaries = new List<SquareBoundary>();
     }
 
-    private void OnEnable() => SquareManager.Instance.squaresList.Add(this);
-    private void OnDisable() => SquareManager.Instance.squaresList.Remove(this);
-    public void AddNewBox(Box box) => boxes.Add(box);
-    public void ClearBoxes() => boxes.Clear();
-    public void Setup(Vector2Int squareSize_, Point lowerLeftPoint_)
+    private void OnEnable() => BoundaryManager.Instance.squares.Add(this);
+    private void OnDisable() => BoundaryManager.Instance.squares.Remove(this);
+
+    public void Setup(Vector2Int squareSize_, Unit lowerLeftUnit_)
     {
         squareSize = squareSize_;
-        lowerLeftPoint = lowerLeftPoint_;
-
+        lowerLeftUnit = lowerLeftUnit_;
+        transform.position = lowerLeftUnit.transform.position;
         List<Unit> checkedUnits = new List<Unit>();
-        CalculateBoundary(lowerLeftPoint.unit, GetUnitsList(), checkedUnits);
+        CalculateBoundary(lowerLeftUnit, GetUnitsList(), checkedUnits);
     }
 
-    List<Unit> GetUnitsList()
+    private List<Unit> GetUnitsList()
     {
         List<Unit> units = new List<Unit>();
-        Vector2Int maxIndex = lowerLeftPoint.index + squareSize - Vector2Int.one;
-        for (int y = lowerLeftPoint.index.y; y <= maxIndex.y; y++)
+        Vector2Int maxIndex = lowerLeftUnit.index + squareSize - Vector2Int.one;
+        for (int y = lowerLeftUnit.index.y; y <= maxIndex.y; y++)
         {
-            for (int x = lowerLeftPoint.index.x; x <= maxIndex.x; x++)
+            for (int x = lowerLeftUnit.index.x; x <= maxIndex.x; x++)
             {
-                Unit unit = MapManager.Instance.GetUnit(x, y);
+                Unit unit = MapManager.Instance[x, y];
                 if (unit) units.Add(unit);
             }
         }
         return units;
     }
 
-    void CheckPoint(Unit baseUnit, Unit checkUnit, List<Unit> squareUnits, List<Unit> checkedUnits, Direction direction, SquareUnit su)
+    private void CheckPoint(Unit baseUnit, Unit checkUnit, List<Unit> squareUnits, List<Unit> checkedUnits, Direction direction, SquareUnit su)
     {
-        Grid<Point> map = MapManager.Instance.map;
+        Lattice<Point> map = MapManager.Instance.map;
 
         if (!squareUnits.Contains(checkUnit))
         {
@@ -80,7 +77,7 @@ public class Square : MonoBehaviour
                     break;
             }
 
-            SpawnBoundary(p0, p1, su);
+            SpawnBoundary(p0, p1, su.unitIndex);
         }
         else
         {
@@ -91,17 +88,16 @@ public class Square : MonoBehaviour
         }
     }
 
-    void CalculateBoundary(Unit current, List<Unit> units, List<Unit> checkedUnits)
+    private void CalculateBoundary(Unit current, List<Unit> units, List<Unit> checkedUnits)
     {
         SquareUnit su = Instantiate(pfSquareUnit, current.transform.position, Quaternion.identity, squareUnitsHolder);
-        //su.Setup(this);
-        squareUnits.Add(su);
+        su.Setup(this, current.index);
         checkedUnits.Add(current);
 
-        Unit up = MapManager.Instance.GetUnit(current.index + Vector2Int.up);
-        Unit down = MapManager.Instance.GetUnit(current.index + Vector2Int.down);
-        Unit left = MapManager.Instance.GetUnit(current.index + Vector2Int.left);
-        Unit right = MapManager.Instance.GetUnit(current.index + Vector2Int.right);
+        Unit up = MapManager.Instance[current.index + Vector2Int.up];
+        Unit down = MapManager.Instance[current.index + Vector2Int.down];
+        Unit left = MapManager.Instance[current.index + Vector2Int.left];
+        Unit right = MapManager.Instance[current.index + Vector2Int.right];
 
         CheckPoint(current, up, units, checkedUnits, Direction.UP, su);
         CheckPoint(current, down, units, checkedUnits, Direction.DOWN, su);
@@ -109,78 +105,58 @@ public class Square : MonoBehaviour
         CheckPoint(current, right, units, checkedUnits, Direction.RIGHT, su);
     }
 
-    void SpawnBoundary(Point p0, Point p1, SquareUnit su)
+    private void SpawnBoundary(Point p0, Point p1, Vector2Int squareUnitIndex)
     {
-        Debug.DrawLine(p0.position, p1.position, Color.white, 100f);
-        BoundaryDirection boundaryDirection = p0.index.y == p1.index.y ? BoundaryDirection.HORIZONTAL : BoundaryDirection.VERTICAL;
-        SquareBoundary sb = Instantiate(pfSquareBoundary, (p0.position + p1.position) / 2f,
-                                                           boundaryDirection == BoundaryDirection.VERTICAL ? Quaternion.Euler(new Vector3(0, 0, 90f)) : Quaternion.identity,
+        SquareBoundary squareBoundary = Instantiate(pfSquareBoundary, (p0.position + p1.position) / 2f,
+                                                           p0.index.y != p1.index.y ? Quaternion.Euler(new Vector3(0, 0, 90f)) : Quaternion.identity,
                                                            squareBoundariesHolder);
         Direction direction;
-        if (boundaryDirection == BoundaryDirection.HORIZONTAL)
-            direction = p0.index.x % 2 == 0 ? Direction.LEFT : Direction.RIGHT;
-        else
-            direction = p0.index.y % 2 == 0 ? Direction.DOWN : Direction.UP;
-        su.AddBoundary(sb);
-        sb.Setup(direction, color);
+        if (p0.index.y != p1.index.y) direction = p0.index.x % 2 == 0 ? Direction.LEFT : Direction.RIGHT;
+        else direction = p0.index.y % 2 == 0 ? Direction.DOWN : Direction.UP;
+
+        Vector2Int pointsIndex = p0.index + p1.index;
+
+        squareBoundary.Setup(this, direction, color, squareUnitIndex, pointsIndex);
+        squareBoundaries.Add(squareBoundary);
     }
 
-    public IEnumerator MoveToTarget(Point target)
+    public override bool CanMove(Direction direction)
     {
-        Vector3 start = transform.position;
-        Vector3 end = target.unitPosition;
-        float t = 0f;
-        while(t < 1f)
+        foreach(var boundary in squareBoundaries)
         {
-            t += Time.deltaTime / .2f;
-            t = Mathf.Clamp01(t);
-            transform.position = Vector3.Lerp(start, end, t);
-            yield return null;
-        }
-
-        lowerLeftPoint = target;
-    }
-
-    public bool CanMove(Direction direction)
-    {
-        for (int i = 0; i < squareUnits.Count; i++)
-        {
-            if(squareUnits[i].squareUnitType == SquareUnitType.BOUNDARY)
+            if(!boundary.CanMove(direction))
             {
-                if(squareUnits[i].boundaryDirection == BoundaryDirection.BOTH ||
-                   squareUnits[i].boundaryDirection == direction.EvaluateDirection())
-                {
-                    if (!squareUnits[i].CanMove(direction))
-                    {
-                        return false;
-                    }
-                }
+                moveState = MoveState.CANNOT;
+                return false;
             }
         }
-        MoveTo(direction);
+        moveState = MoveState.CAN;
         return true;
     }
 
-    private void MoveTo(Direction direction)
+    public override void MoveTo(Direction direction)
     {
         StartCoroutine(MoveToTarget(direction));
     }
 
-    IEnumerator MoveToTarget(Direction dir)
+    public override IEnumerator MoveToTarget(Direction direction)
     {
-        Point target = MapManager.Instance.map[lowerLeftPoint.index + dir.GetValue()];
-
+        state = State.Moving;
+        OnMove?.Invoke(direction);
+        Unit target = MapManager.Instance[lowerLeftUnit.index + direction.GetValue()];
         Vector3 start = transform.position;
-        Vector3 end = target.unitPosition;
+        Vector3 end = target.transform.position;
+
         float t = 0f;
-        while (t < 1f)
+        while(t < 1f)
         {
-            t += Time.deltaTime / .2f;
+            t += Time.deltaTime / moveTime;
             t = Mathf.Clamp01(t);
             transform.position = Vector3.Lerp(start, end, t);
             yield return null;
         }
 
-        lowerLeftPoint = target;
+        state = State.Idle;
+        lowerLeftUnit = target;
     }
 }

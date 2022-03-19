@@ -4,6 +4,7 @@ using UnityEngine;
 
 public interface IMoveChecker
 {
-    Transform transform { get; }
+    GameObject gameObject { get; }
     MoveState moveState { get; set; }
+    bool CanMove(Direction direction);
 }

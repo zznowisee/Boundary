@@ -1,10 +1,4 @@
 using UnityEngine;
-public enum BoundaryDirection
-{
-    HORIZONTAL,
-    VERTICAL,
-    BOTH
-}
 
 public enum BoundaryType
 {
@@ -19,12 +13,23 @@ public enum Direction
     LEFT,
     RIGHT
 }
+public enum SquareUnitType
+{
+    INNER,
+    OUTTER
+}
 
 public enum MoveState
 {
-    NULLCHECK = 0,
+    NONECHECK = 0,
     CAN,
     CANNOT
+}
+
+public enum DirectionType
+{
+    HORIZONTAL,
+    VERTICAL
 }
 
 public static class DirectionExtension
@@ -41,12 +46,6 @@ public static class DirectionExtension
         return Vector2Int.zero;
     }
 
-    public static BoundaryDirection EvaluateDirection(this Direction dir)
-    {
-        BoundaryDirection bd = dir == Direction.DOWN || dir == Direction.UP ? BoundaryDirection.VERTICAL : BoundaryDirection.HORIZONTAL;
-        return bd;
-    }
-
     public static Direction Opposite (this Direction direction)
     {
         switch (direction)
@@ -58,38 +57,6 @@ public static class DirectionExtension
         }
         return direction;
     }
-}
-
-public static class BoundaryDirectionExtension
-{
-    public static BoundaryDirection EvaluateDirection(this BoundaryDirection bd, Direction dir)
-    {
-        if (bd == BoundaryDirection.BOTH)
-            return bd;
-
-        if (bd == BoundaryDirection.HORIZONTAL)
-        {
-            if(dir == Direction.DOWN || dir == Direction.UP)
-            {
-                return BoundaryDirection.BOTH;
-            }
-            return bd;
-        }
-        else
-        {
-            if (dir == Direction.LEFT || dir == Direction.RIGHT)
-            {
-                return BoundaryDirection.BOTH;
-            }
-            return bd;
-        }
-    }
-}
-
-public enum SquareUnitType
-{
-    INNER,
-    BOUNDARY
 }
 
 
