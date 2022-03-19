@@ -64,7 +64,7 @@
     <Compile Include="Assets\Scripts\Entity\Square.cs" />
     <Compile Include="Assets\Scripts\Entity\SquareUnit.cs" />
     <Compile Include="Assets\Scripts\Entity\Entity.cs" />
-    <Compile Include="Assets\Scripts\Manager\BoundaryManager.cs" />
+    <Compile Include="Assets\Scripts\Manager\SquareManager.cs" />
     <Compile Include="Assets\Scripts\Helper\Utils.cs" />
     <Compile Include="Assets\Scripts\ScriptableObject\ColorSO.cs" />
     <Compile Include="Assets\Scripts\Manager\BuildManager.cs" />
@@ -93,6 +93,7 @@
     <None Include="Assets\Package\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\Package\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\Package\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
+    <None Include="Assets\Shaders\Point.shader" />
     <None Include="Assets\Package\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
     <None Include="Assets\Package\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
     <None Include="Assets\Package\TextMesh Pro\Shaders\TMP_Sprite.shader" />

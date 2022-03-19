@@ -5,14 +5,20 @@ using System;
 
 public class Square : Entity
 {
+
+    public int boxNumber;
+
     private Unit lowerLeftUnit;
     private Vector2Int squareSize;
     private Transform squareUnitsHolder;
     private Transform squareBoundariesHolder;
+
     [SerializeField] private Color color;
     [SerializeField] private SquareBoundary pfSquareBoundary;
     [SerializeField] private SquareUnit pfSquareUnit;
+
     [HideInInspector] public List<SquareBoundary> squareBoundaries;
+    [HideInInspector] public List<SquareUnit> squareUnits;
 
     public event Action<Direction> OnMove;
 
@@ -21,10 +27,11 @@ public class Square : Entity
         squareUnitsHolder = transform.Find("squareUnitsHolder");
         squareBoundariesHolder = transform.Find("squareBoundariesHolder");
         squareBoundaries = new List<SquareBoundary>();
+        squareUnits = new List<SquareUnit>();
     }
 
-    private void OnEnable() => BoundaryManager.Instance.squares.Add(this);
-    private void OnDisable() => BoundaryManager.Instance.squares.Remove(this);
+    private void OnEnable() => SquareManager.Instance.squaresList.Add(this);
+    private void OnDisable() => SquareManager.Instance.squaresList.Remove(this);
 
     public void Setup(Vector2Int squareSize_, Unit lowerLeftUnit_)
     {
@@ -76,8 +83,9 @@ public class Square : Entity
                     p1 = map[baseUnit.index + Vector2Int.one];
                     break;
             }
-
-            SpawnBoundary(p0, p1, su.unitIndex, direction);
+            //refac
+            su.squareUnitType = SquareUnitType.OUTTER;
+            SpawnBoundary(su, p0, p1, direction);
         }
         else
         {
@@ -92,7 +100,10 @@ public class Square : Entity
     {
         SquareUnit su = Instantiate(pfSquareUnit, current.transform.position, Quaternion.identity, squareUnitsHolder);
         su.Setup(this, current.index);
+        //refac
+        su.squareUnitType = SquareUnitType.INNER;
         checkedUnits.Add(current);
+        squareUnits.Add(su);
 
         Unit up = MapManager.Instance[current.index + Vector2Int.up];
         Unit down = MapManager.Instance[current.index + Vector2Int.down];
@@ -105,14 +116,14 @@ public class Square : Entity
         CheckPoint(current, right, units, checkedUnits, Direction.RIGHT, su);
     }
 
-    private void SpawnBoundary(Point p0, Point p1, Vector2Int squareUnitIndex, Direction direction)
+    private void SpawnBoundary(SquareUnit su, Point p0, Point p1, Direction direction)
     {
         SquareBoundary squareBoundary = Instantiate(pfSquareBoundary, (p0.position + p1.position) / 2f,
                                                            p0.index.y != p1.index.y ? Quaternion.Euler(new Vector3(0, 0, 90f)) : Quaternion.identity,
                                                            squareBoundariesHolder);
         Vector2Int pointsIndex = p0.index + p1.index;
 
-        squareBoundary.Setup(this, direction, color, squareUnitIndex, pointsIndex);
+        squareBoundary.Setup(this, direction, color, su, pointsIndex);
         squareBoundaries.Add(squareBoundary);
     }
 
@@ -134,11 +145,6 @@ public class Square : Entity
         return true;
     }
 
-    public override void MoveTo(Direction direction)
-    {
-        StartCoroutine(MoveToTarget(direction));
-    }
-
     public override IEnumerator MoveToTarget(Direction direction)
     {
         state = State.Moving;
@@ -158,5 +164,26 @@ public class Square : Entity
         state = State.Idle;
         lowerLeftUnit = target;
         OnMove?.Invoke(direction);
+    }
+
+    public int GetBoxNumber()
+    {
+        int boxNum = 0;
+        for (int i = 0; i < squareUnits.Count; i++)
+        {
+            if (squareUnits[i].FindBox())
+            {
+                boxNum++;
+            }
+        }
+        return boxNum;
+    }
+
+    public void UpdateSquareBoundaries()
+    {
+        for (int i = 0; i < squareBoundaries.Count; i++)
+        {
+            squareBoundaries[i].UpdateBoundaryType();
+        }
     }
 }

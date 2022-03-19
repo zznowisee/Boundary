@@ -27,6 +27,12 @@ public enum MoveState
     CANNOT
 }
 
+public enum SquareUnitType
+{
+    OUTTER,
+    INNER
+}
+
 public static class DirectionExtension
 {
     public static Vector2Int GetValue(this Direction direction)

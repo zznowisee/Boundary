@@ -39,18 +39,6 @@ public static class InputHelper
         return squares.ToArray();
     }
 
-    public static Vector2Int GetBoundaryIndex(Vector2Int playerIndex, Direction moveDir)
-    {
-        switch (moveDir)
-        {
-            case Direction.DOWN: return playerIndex + playerIndex + Vector2Int.right;
-            case Direction.UP: return playerIndex + Vector2Int.up + playerIndex + Vector2Int.one;
-            case Direction.RIGHT: return playerIndex + Vector2Int.right + playerIndex + Vector2Int.one;
-            case Direction.LEFT: return playerIndex + playerIndex + Vector2Int.up;
-        }
-        return Vector2Int.zero;
-    }
-
     public static Vector2Int GetBoundaryCheckIndex(Direction direction, Vector2Int current)
     {
         Vector2Int checkIndex = Vector2Int.zero;
@@ -62,23 +50,5 @@ public static class InputHelper
             case Direction.RIGHT: checkIndex = current * 2 + Vector2Int.right + Vector2Int.one; break;
         }
         return checkIndex;
-    }
-
-    public static bool IsUnitEmpty(Vector3 position)
-    {
-        RaycastHit2D[] hits = Physics2D.RaycastAll(position, Vector3.forward, float.MaxValue);
-        for (int i = 0; i < hits.Length; i++)
-        {
-            if (hits[i].collider)
-            {
-                Box box = hits[i].collider.GetComponent<Box>();
-                if (box)
-                {
-                    return false;
-                }
-            }
-        }
-
-        return true;
     }
 }

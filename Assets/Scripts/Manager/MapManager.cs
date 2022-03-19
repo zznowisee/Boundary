@@ -48,10 +48,7 @@ public class MapManager : MonoBehaviour
             {
                 Unit unit = Instantiate(pfUnit, map.GetCenterPosition(x, y), Quaternion.identity, holder);
                 unit.transform.localScale = Vector3.one * (1 - slotOutlinePercent) * cellSize;
-                unit.Setup(new Vector2Int(x, y), map[x, y],
-                                                 map[x + 1, y],
-                                                 map[x, y + 1],
-                                                 map[x + 1, y + 1]);
+                unit.Setup(new Vector2Int(x, y));
                 units[x, y] = unit;
                 unit.transform.Find("index").GetComponent<TextMeshPro>().text = $"{x}.{y}";
             }
@@ -80,20 +77,5 @@ public class Point
         this.map = map;
         position = map.GetWorldPosition(x, y);
         Debug.DrawLine(position, Vector3.zero, Color.white, 100f);
-    }
-}
-
-public struct RectPoint
-{
-    public Point p00;
-    public Point p10;
-    public Point p01;
-    public Point p11;
-    public RectPoint(Point p00, Point p10, Point p01, Point p11)
-    {
-        this.p00 = p00;
-        this.p10 = p10;
-        this.p01 = p01;
-        this.p11 = p11;
     }
 }

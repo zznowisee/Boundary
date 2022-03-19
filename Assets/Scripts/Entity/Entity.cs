@@ -15,28 +15,50 @@ public class Entity : MonoBehaviour, IMoveChecker
     public event Action OnMoveEnd;
 
     public MoveState moveState { get; set; }
-    private void OnEnable() => BoundaryManager.Instance.moveCheckers.Add(this);
-    private void OnDisable() => BoundaryManager.Instance.moveCheckers.Remove(this);
+
+    protected void LeaveCurrentUnit()
+    {
+        currentUnit.currentEntity = null;
+        currentUnit = null;
+    }
+
+    protected void EnterNewUnit(Unit newUnit)
+    {
+        currentUnit = newUnit;
+        currentUnit.currentEntity = this;
+    }
 
     public virtual void Setup(Unit initUnit_)
     {
-        currentUnit = initUnit_;
+        EnterNewUnit(initUnit_);
         transform.position = currentUnit.transform.position;
     }
 
     public virtual void MoveTo(Direction direction)
     {
-        Unit target = MapManager.Instance[currentUnit.index + direction.GetValue()];
-
-        if(target != null)
-        {
-            StartCoroutine(MoveToTarget(direction));
-        }
+        StartCoroutine(MoveToTarget(direction));
     }
 
     public virtual IEnumerator MoveToTarget(Direction direction)
     {
-        yield return null;
+        state = State.Moving;
+        Unit target = MapManager.Instance[currentUnit.index + direction.GetValue()];
+        Vector3 start = transform.position;
+        Vector3 end = target.transform.position;
+        LeaveCurrentUnit();
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / moveTime;
+            t = Mathf.Clamp01(t);
+            transform.position = Vector3.Lerp(start, end, t);
+            yield return null;
+        }
+
+        state = State.Idle;
+        OnMoveEnd?.Invoke();
+
+        EnterNewUnit(target);
     }
 
     public virtual bool CanMove(Direction direction)

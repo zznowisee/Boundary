@@ -195,6 +195,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 0, y: 3}
+  currentEntity: {fileID: 0}
 --- !u!212 &2241372
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -319,6 +320,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 7, y: 7}
+  currentEntity: {fileID: 0}
 --- !u!212 &160556464
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -443,6 +445,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 8, y: 1}
+  currentEntity: {fileID: 0}
 --- !u!212 &174530333
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -567,6 +570,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 2, y: 1}
+  currentEntity: {fileID: 0}
 --- !u!212 &175983972
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -691,6 +695,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 1, y: 2}
+  currentEntity: {fileID: 0}
 --- !u!212 &187688775
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -815,6 +820,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 3, y: 1}
+  currentEntity: {fileID: 0}
 --- !u!212 &192529848
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -939,6 +945,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 6, y: 6}
+  currentEntity: {fileID: 0}
 --- !u!212 &201678818
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1063,6 +1070,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 6, y: 8}
+  currentEntity: {fileID: 0}
 --- !u!212 &206162917
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1187,6 +1195,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 6, y: 4}
+  currentEntity: {fileID: 0}
 --- !u!212 &218221367
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1311,6 +1320,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 2, y: 4}
+  currentEntity: {fileID: 0}
 --- !u!212 &227876824
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1435,6 +1445,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 4, y: 7}
+  currentEntity: {fileID: 0}
 --- !u!212 &236793801
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1559,6 +1570,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 1, y: 7}
+  currentEntity: {fileID: 0}
 --- !u!212 &247524568
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1683,6 +1695,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 7, y: 8}
+  currentEntity: {fileID: 0}
 --- !u!212 &300672737
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1807,6 +1820,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 7, y: 3}
+  currentEntity: {fileID: 0}
 --- !u!212 &330348637
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1931,6 +1945,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 8, y: 2}
+  currentEntity: {fileID: 0}
 --- !u!212 &332878270
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2055,6 +2070,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 5, y: 1}
+  currentEntity: {fileID: 0}
 --- !u!212 &333290635
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2150,7 +2166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0451631664ef634ba463f23a0f9c27f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  squares: []
+  squaresList: []
 --- !u!1 &395413741
 GameObject:
   m_ObjectHideFlags: 0
@@ -2223,6 +2239,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 1, y: 3}
+  currentEntity: {fileID: 0}
 --- !u!212 &395413745
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2347,6 +2364,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 2, y: 2}
+  currentEntity: {fileID: 0}
 --- !u!212 &461975348
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2471,6 +2489,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 4, y: 0}
+  currentEntity: {fileID: 0}
 --- !u!212 &478192074
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2559,7 +2578,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.13207549, g: 0.13207549, b: 0.13207549, a: 1}
+  m_BackGroundColor: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -2678,6 +2697,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 4, y: 8}
+  currentEntity: {fileID: 0}
 --- !u!212 &532017726
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2802,6 +2822,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 6, y: 3}
+  currentEntity: {fileID: 0}
 --- !u!212 &582189112
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2926,6 +2947,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 8, y: 8}
+  currentEntity: {fileID: 0}
 --- !u!212 &584471605
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3050,6 +3072,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 2, y: 3}
+  currentEntity: {fileID: 0}
 --- !u!212 &613472665
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3174,6 +3197,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 3, y: 5}
+  currentEntity: {fileID: 0}
 --- !u!212 &644213857
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3298,6 +3322,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 1, y: 4}
+  currentEntity: {fileID: 0}
 --- !u!212 &666556030
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3422,6 +3447,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 2, y: 8}
+  currentEntity: {fileID: 0}
 --- !u!212 &735079252
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3546,6 +3572,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 8, y: 5}
+  currentEntity: {fileID: 0}
 --- !u!212 &769676198
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3670,6 +3697,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 5, y: 7}
+  currentEntity: {fileID: 0}
 --- !u!212 &772179260
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3794,6 +3822,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 6, y: 1}
+  currentEntity: {fileID: 0}
 --- !u!212 &836433425
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3918,6 +3947,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 5, y: 6}
+  currentEntity: {fileID: 0}
 --- !u!212 &836884794
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4042,6 +4072,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 6, y: 2}
+  currentEntity: {fileID: 0}
 --- !u!212 &842007102
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4166,6 +4197,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 5, y: 8}
+  currentEntity: {fileID: 0}
 --- !u!212 &842838981
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4290,6 +4322,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 8, y: 7}
+  currentEntity: {fileID: 0}
 --- !u!212 &845781922
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4414,6 +4447,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 1, y: 6}
+  currentEntity: {fileID: 0}
 --- !u!212 &860986297
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4538,6 +4572,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 2, y: 6}
+  currentEntity: {fileID: 0}
 --- !u!212 &906771788
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4662,6 +4697,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 3, y: 2}
+  currentEntity: {fileID: 0}
 --- !u!212 &910475145
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4786,6 +4822,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 8, y: 4}
+  currentEntity: {fileID: 0}
 --- !u!212 &943307508
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4910,6 +4947,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 7, y: 4}
+  currentEntity: {fileID: 0}
 --- !u!212 &995258232
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5034,6 +5072,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 8, y: 0}
+  currentEntity: {fileID: 0}
 --- !u!212 &1036949198
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5158,6 +5197,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 0, y: 4}
+  currentEntity: {fileID: 0}
 --- !u!212 &1050050604
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5282,6 +5322,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 3, y: 0}
+  currentEntity: {fileID: 0}
 --- !u!212 &1061206937
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5406,6 +5447,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 2, y: 7}
+  currentEntity: {fileID: 0}
 --- !u!212 &1062530896
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5530,6 +5572,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 8, y: 3}
+  currentEntity: {fileID: 0}
 --- !u!212 &1075118637
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5654,6 +5697,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 0, y: 2}
+  currentEntity: {fileID: 0}
 --- !u!212 &1080455151
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5778,6 +5822,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 7, y: 2}
+  currentEntity: {fileID: 0}
 --- !u!212 &1085778721
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5902,6 +5947,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 0, y: 5}
+  currentEntity: {fileID: 0}
 --- !u!212 &1092883567
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6026,6 +6072,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 6, y: 0}
+  currentEntity: {fileID: 0}
 --- !u!212 &1096323711
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6150,6 +6197,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 1, y: 1}
+  currentEntity: {fileID: 0}
 --- !u!212 &1106064571
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6274,6 +6322,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 5, y: 3}
+  currentEntity: {fileID: 0}
 --- !u!212 &1122503062
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6398,6 +6447,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 2, y: 5}
+  currentEntity: {fileID: 0}
 --- !u!212 &1139775214
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6522,6 +6572,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 0, y: 8}
+  currentEntity: {fileID: 0}
 --- !u!212 &1151752327
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6646,6 +6697,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 5, y: 5}
+  currentEntity: {fileID: 0}
 --- !u!212 &1164141110
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6770,6 +6822,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 4, y: 3}
+  currentEntity: {fileID: 0}
 --- !u!212 &1211583803
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6894,6 +6947,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 0, y: 7}
+  currentEntity: {fileID: 0}
 --- !u!212 &1249780406
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7018,6 +7072,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 7, y: 1}
+  currentEntity: {fileID: 0}
 --- !u!212 &1256960203
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7189,6 +7244,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 4, y: 1}
+  currentEntity: {fileID: 0}
 --- !u!212 &1273867068
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7313,6 +7369,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 2, y: 0}
+  currentEntity: {fileID: 0}
 --- !u!212 &1315940956
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7437,6 +7494,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 3, y: 8}
+  currentEntity: {fileID: 0}
 --- !u!212 &1326739310
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7561,6 +7619,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 0, y: 0}
+  currentEntity: {fileID: 0}
 --- !u!212 &1354876095
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7685,6 +7744,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 1, y: 8}
+  currentEntity: {fileID: 0}
 --- !u!212 &1418323435
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7809,6 +7869,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 6, y: 5}
+  currentEntity: {fileID: 0}
 --- !u!212 &1420112741
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7933,6 +7994,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 3, y: 4}
+  currentEntity: {fileID: 0}
 --- !u!212 &1455185946
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8057,6 +8119,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 8, y: 6}
+  currentEntity: {fileID: 0}
 --- !u!212 &1469179377
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8181,6 +8244,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 5, y: 0}
+  currentEntity: {fileID: 0}
 --- !u!212 &1485690716
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8305,6 +8369,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 4, y: 6}
+  currentEntity: {fileID: 0}
 --- !u!212 &1486954724
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8429,6 +8494,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 3, y: 7}
+  currentEntity: {fileID: 0}
 --- !u!212 &1502716292
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8553,6 +8619,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 5, y: 4}
+  currentEntity: {fileID: 0}
 --- !u!212 &1521711600
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8677,6 +8744,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 0, y: 6}
+  currentEntity: {fileID: 0}
 --- !u!212 &1578784939
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8801,6 +8869,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 4, y: 2}
+  currentEntity: {fileID: 0}
 --- !u!212 &1581826915
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9084,6 +9153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 5, y: 2}
+  currentEntity: {fileID: 0}
 --- !u!212 &1766732546
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9208,6 +9278,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 7, y: 0}
+  currentEntity: {fileID: 0}
 --- !u!212 &1872952382
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9375,6 +9446,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 0, y: 1}
+  currentEntity: {fileID: 0}
 --- !u!212 &1905873095
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9499,6 +9571,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 1, y: 0}
+  currentEntity: {fileID: 0}
 --- !u!212 &1910126856
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9623,6 +9696,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 4, y: 4}
+  currentEntity: {fileID: 0}
 --- !u!212 &1910356516
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9747,6 +9821,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 7, y: 5}
+  currentEntity: {fileID: 0}
 --- !u!212 &1985651401
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9871,6 +9946,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 1, y: 5}
+  currentEntity: {fileID: 0}
 --- !u!212 &2030536092
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9995,6 +10071,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 6, y: 7}
+  currentEntity: {fileID: 0}
 --- !u!212 &2032977824
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -10119,6 +10196,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 7, y: 6}
+  currentEntity: {fileID: 0}
 --- !u!212 &2052486754
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -10243,6 +10321,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 3, y: 6}
+  currentEntity: {fileID: 0}
 --- !u!212 &2059437566
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -10367,6 +10446,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 4, y: 5}
+  currentEntity: {fileID: 0}
 --- !u!212 &2063822084
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -10491,6 +10571,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   index: {x: 3, y: 3}
+  currentEntity: {fileID: 0}
 --- !u!212 &2124423749
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -10543,3 +10624,85 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &2126502741
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2126502742}
+  - component: {fileID: 2126502743}
+  - component: {fileID: 2126502744}
+  m_Layer: 0
+  m_Name: Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2126502742
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126502741}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &2126502743
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126502741}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 4e7674c28fd5e854da2329120e6a36e0, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &2126502744
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2126502741}
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
