@@ -75,9 +75,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8005712390fca664db8721d36c301bbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: {r: 1, g: 0.4481132, b: 0.4481132, a: 1}
+  currentUnit: {fileID: 0}
+  color: {r: 1, g: 1, b: 1, a: 1}
   pfSquareBoundary: {fileID: 3604143133580638041, guid: 2cf5e698cabbb374e9f3732bf8abcf39, type: 3}
   pfSquareUnit: {fileID: 5288938744072254947, guid: d80ae512248e4cf479cd04053b3a7fea, type: 3}
+  squareBoundaries: []
 --- !u!1 &6601937404460112632
 GameObject:
   m_ObjectHideFlags: 0

@@ -77,7 +77,7 @@ public class Square : Entity
                     break;
             }
 
-            SpawnBoundary(p0, p1, su.unitIndex);
+            SpawnBoundary(p0, p1, su.unitIndex, direction);
         }
         else
         {
@@ -105,15 +105,11 @@ public class Square : Entity
         CheckPoint(current, right, units, checkedUnits, Direction.RIGHT, su);
     }
 
-    private void SpawnBoundary(Point p0, Point p1, Vector2Int squareUnitIndex)
+    private void SpawnBoundary(Point p0, Point p1, Vector2Int squareUnitIndex, Direction direction)
     {
         SquareBoundary squareBoundary = Instantiate(pfSquareBoundary, (p0.position + p1.position) / 2f,
                                                            p0.index.y != p1.index.y ? Quaternion.Euler(new Vector3(0, 0, 90f)) : Quaternion.identity,
                                                            squareBoundariesHolder);
-        Direction direction;
-        if (p0.index.y != p1.index.y) direction = p0.index.x % 2 == 0 ? Direction.LEFT : Direction.RIGHT;
-        else direction = p0.index.y % 2 == 0 ? Direction.DOWN : Direction.UP;
-
         Vector2Int pointsIndex = p0.index + p1.index;
 
         squareBoundary.Setup(this, direction, color, squareUnitIndex, pointsIndex);
@@ -124,12 +120,16 @@ public class Square : Entity
     {
         foreach(var boundary in squareBoundaries)
         {
-            if(!boundary.CanMove(direction))
+            if (boundary.direction.GetDirectionType() != direction.GetDirectionType())
+                continue;
+
+            if (!boundary.CanMove(direction))
             {
                 moveState = MoveState.CANNOT;
                 return false;
             }
         }
+
         moveState = MoveState.CAN;
         return true;
     }
@@ -142,7 +142,6 @@ public class Square : Entity
     public override IEnumerator MoveToTarget(Direction direction)
     {
         state = State.Moving;
-        OnMove?.Invoke(direction);
         Unit target = MapManager.Instance[lowerLeftUnit.index + direction.GetValue()];
         Vector3 start = transform.position;
         Vector3 end = target.transform.position;
@@ -158,5 +157,6 @@ public class Square : Entity
 
         state = State.Idle;
         lowerLeftUnit = target;
+        OnMove?.Invoke(direction);
     }
 }

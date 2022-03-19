@@ -13,10 +13,11 @@ public enum Direction
     LEFT,
     RIGHT
 }
-public enum SquareUnitType
+
+public enum DirectionType
 {
-    INNER,
-    OUTTER
+    HORIZONTAL,
+    VERTICAL
 }
 
 public enum MoveState
@@ -24,12 +25,6 @@ public enum MoveState
     NONECHECK = 0,
     CAN,
     CANNOT
-}
-
-public enum DirectionType
-{
-    HORIZONTAL,
-    VERTICAL
 }
 
 public static class DirectionExtension
@@ -56,6 +51,19 @@ public static class DirectionExtension
             case Direction.RIGHT: return Direction.LEFT;
         }
         return direction;
+    }
+
+    public static DirectionType GetDirectionType (this Direction direction)
+    {
+        if(direction == Direction.DOWN || direction == Direction.UP)
+        {
+            return DirectionType.VERTICAL;
+        }
+        if(direction == Direction.RIGHT || direction == Direction.LEFT)
+        {
+            return DirectionType.HORIZONTAL;
+        }
+        return DirectionType.HORIZONTAL;
     }
 }
 

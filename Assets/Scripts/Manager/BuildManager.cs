@@ -23,10 +23,18 @@ public class BuildManager : MonoBehaviour
         player.Setup(MapManager.Instance[index]);
     }
 
+    void InitBox(Vector2Int index)
+    {
+        Box box = Instantiate(pfBox);
+        box.Setup(MapManager.Instance[index]);
+    }
+
     private void Start()
     {
         InitSquare(Vector2Int.one, new Vector2Int(2, 2));
-        //InitSquare(Vector2Int.one, new Vector2Int(3, 2));
-        InitPlayer(new Vector2Int(3, 2));
+        InitSquare(Vector2Int.one * 3, new Vector2Int(2, 2));
+        InitPlayer(new Vector2Int(7, 7));
+
+        InitBox(Vector2Int.one * 2);
     }
 }

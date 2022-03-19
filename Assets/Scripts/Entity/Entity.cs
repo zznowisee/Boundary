@@ -8,7 +8,7 @@ public class Entity : MonoBehaviour, IMoveChecker
     public enum State { Idle = 0, Moving }
 
     protected State state;
-    public Unit currentUnit;
+    [HideInInspector] public Unit currentUnit;
     protected const float moveTime = .2f;
 
     public event Action<Direction> OnMoveStart;
@@ -21,7 +21,6 @@ public class Entity : MonoBehaviour, IMoveChecker
     public virtual void Setup(Unit initUnit_)
     {
         currentUnit = initUnit_;
-
         transform.position = currentUnit.transform.position;
     }
 

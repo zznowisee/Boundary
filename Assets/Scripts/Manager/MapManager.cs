@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class MapManager : MonoBehaviour
@@ -52,6 +53,7 @@ public class MapManager : MonoBehaviour
                                                  map[x, y + 1],
                                                  map[x + 1, y + 1]);
                 units[x, y] = unit;
+                unit.transform.Find("index").GetComponent<TextMeshPro>().text = $"{x}.{y}";
             }
         }
     }
@@ -94,16 +96,4 @@ public struct RectPoint
         this.p01 = p01;
         this.p11 = p11;
     }
-}
-
-public class BoundaryData
-{
-    public SquareBoundary boundary;
-    public Vector2Int pointsIndex;
-    public BoundaryData(SquareBoundary boundary, Vector2Int index)
-    {
-        this.boundary = boundary;
-        this.pointsIndex = index;
-    }
-    public void UpdateIndex(Direction direction) => pointsIndex += direction.GetValue() * 2;
 }

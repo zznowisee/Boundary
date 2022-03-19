@@ -22,7 +22,7 @@ public static class InputHelper
     public static bool IsMouseOverUIObject => EventSystem.current.IsPointerOverGameObject();
     public static Square[] GetSquaresInWorldPosition(Vector3 position)
     {
-        RaycastHit2D[] hits = Physics2D.RaycastAll(position, Vector3.up, float.MaxValue);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(position, Vector3.forward, float.MaxValue);
         List<Square> squares = new List<Square>();
         for (int i = 0; i < hits.Length; i++)
         {
@@ -66,7 +66,7 @@ public static class InputHelper
 
     public static bool IsUnitEmpty(Vector3 position)
     {
-        RaycastHit2D[] hits = Physics2D.RaycastAll(position, Vector3.up, float.MaxValue);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(position, Vector3.forward, float.MaxValue);
         for (int i = 0; i < hits.Length; i++)
         {
             if (hits[i].collider)

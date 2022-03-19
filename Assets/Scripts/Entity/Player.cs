@@ -73,8 +73,17 @@ public class Player : Entity
         //Ã»ÓÐsquare
         if(squares.Count == 0)
         {
-            print("Squares is zero");
-            return target.IsEmpty();
+            print("Null squares, No need to check boundary");
+            if (target.IsEmpty())
+            {
+                print(target.index + " :target is empty");
+                return true;
+            }
+            else
+            {
+                print(target.index + ": target is not empty");
+                return false;
+            }
         }
         else
         {

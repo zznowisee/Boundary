@@ -8,10 +8,10 @@ public class SquareBoundary : MonoBehaviour
     [SerializeField] private Material dottedMat;
     [SerializeField] private Material solidMat;
     [HideInInspector] public Square square;
-    [HideInInspector] public Direction direction;
+    public Direction direction;
     [HideInInspector] public BoundaryType boundaryType;
     [HideInInspector] public Vector2Int pointsIndex;
-    [HideInInspector] public Vector2Int squareUnitIndex;
+    public Vector2Int squareUnitIndex;
 
     private void Awake()
     {
@@ -56,17 +56,19 @@ public class SquareBoundary : MonoBehaviour
         if (boundaryType == BoundaryType.DOTTED)
             return true;
         Vector2Int checkIndex = squareUnitIndex;
-        print(checkIndex);
+        print("Boundary Direction: " + direction);
+        print("Move Direction: " + direction_);
+        print("before: " + checkIndex);
         if (direction == Direction.LEFT && direction_ == Direction.LEFT) checkIndex += Vector2Int.left;
         else if (direction == Direction.RIGHT && direction_ == Direction.RIGHT) checkIndex += Vector2Int.right;
         else if (direction == Direction.DOWN && direction_ == Direction.DOWN) checkIndex += Vector2Int.down;
         else if (direction == Direction.UP && direction_ == Direction.UP) checkIndex += Vector2Int.up;
-        print(checkIndex);
+        print("after:" + checkIndex);
         Unit checkUnit = MapManager.Instance[checkIndex];
         //如果已经到达地图边界， 是否会存在从0进入 会从 x最大的点 出来的情况
         if (checkUnit == null)
         {
-            print("Check Unit Is Null");
+            //print("Check Unit Is Null");
             return false;
         }
         else
@@ -75,7 +77,7 @@ public class SquareBoundary : MonoBehaviour
             {
                 /*                Box box = checkUnit.currentEntity as Box;
                                 return box.CanMove(direction);*/
-                print("Check Unit Is Not Empty");
+                print(squareUnitIndex + "checking ," + checkUnit.index  +" :Check Unit Is Not Empty");
                 return false;
             }
             return true;
