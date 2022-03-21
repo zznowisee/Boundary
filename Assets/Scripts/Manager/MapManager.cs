@@ -76,6 +76,11 @@ public class Point
         this.index = new Vector2Int(x, y);
         this.map = map;
         position = map.GetWorldPosition(x, y);
-        Debug.DrawLine(position, Vector3.zero, Color.white, 100f);
     }
+}
+
+public class Line
+{
+    public Vector2Int sIndex;
+    public Vector2Int lIndex;
 }

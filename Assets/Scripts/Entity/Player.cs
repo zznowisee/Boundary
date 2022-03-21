@@ -68,18 +68,19 @@ public class Player : Entity
 
         Vector2Int boundaryCheckIndex = InputHelper.GetBoundaryCheckIndex(direction, currentUnit.index);
         List<Square> squares = SquareManager.Instance.GetSolidBoundarySquares(boundaryCheckIndex);
+        List<Square> canMoveSquareList = new List<Square>();
         //Ã»ÓÐsquare
-        if(squares.Count == 0)
+        if (squares.Count == 0)
         {
-            print("Null squares, No need to check boundary");
+            //print("Null squares, No need to check boundary");
             if (target.IsEmpty())
             {
-                print(target.index + " :target is empty");
+                //print(target.index + " :target is empty");
                 return true;
             }
             else
             {
-                print(target.index + ": target is not empty");
+                //print(target.index + ": target is not empty");
                 return false;
             }
         }
@@ -105,11 +106,12 @@ public class Player : Entity
                     else
                     {
                         square.moveState = MoveState.CAN;
-                        square.MoveTo(direction);
+                        canMoveSquareList.Add(square);
                     }
                 }
             }
         }
+        canMoveSquareList.ForEach(square => square.MoveTo(direction));
         return true;
     }
 }

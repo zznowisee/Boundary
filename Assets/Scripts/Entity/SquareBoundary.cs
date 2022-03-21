@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public struct BoundaryInfo
 {
+    public Vector2Int minIndex;
+    public Vector2Int maxIndex;
     public Direction direction;
-    public Vector2Int pointsIndex;
     public BoundaryType boundaryType;
 }
 
@@ -17,31 +19,33 @@ public class SquareBoundary : MonoBehaviour
     [HideInInspector] public Square square;
 
     [HideInInspector] public SquareUnit squareUnit;
-    [HideInInspector] public Direction direction;
-
-    [HideInInspector] public BoundaryType boundaryType;
-    [HideInInspector] public Vector2Int pointsIndex;
+    [HideInInspector] public Vector2Int pointsIndex { get { return boundaryInfo.minIndex + boundaryInfo.maxIndex; } }
+    public BoundaryInfo boundaryInfo;
 
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    public void Setup(Square square_, Direction direction_, Color color_, SquareUnit squareUnit_, Vector2Int pointsIndex_)
+    public void Setup(Square square_, Direction direction_, Color color_, SquareUnit squareUnit_, Vector2Int minIndex_, Vector2Int maxIndex_)
     {
         square = square_;
-        direction = direction_;
+        boundaryInfo.direction = direction_;
         spriteRenderer.color = color_;
         squareUnit = squareUnit_;
-        boundaryType = BoundaryType.SOLID;
-        SetBoundaryVisual(); 
-        pointsIndex = pointsIndex_;
-        square.OnMove += (Direction dir) => pointsIndex += dir.GetValue() * 2;
+        boundaryInfo.boundaryType = BoundaryType.SOLID;
+        SetBoundaryVisual();
+        square.OnMove += (Direction dir) =>
+        {
+            boundaryInfo.minIndex += dir.GetValue();
+            boundaryInfo.maxIndex += dir.GetValue();
+        };
+        boundaryInfo = new BoundaryInfo() { boundaryType = BoundaryType.SOLID, direction = direction_, maxIndex = maxIndex_, minIndex = minIndex_ };
     }
     
     private void SetBoundaryVisual()
     {
-        switch (boundaryType)
+        switch (boundaryInfo.boundaryType)
         {
             case BoundaryType.DOTTED:
                 spriteRenderer.material = dottedMat;
@@ -52,10 +56,16 @@ public class SquareBoundary : MonoBehaviour
         }
     }
 
+    public void SetBoundaryType(BoundaryType boundaryType_)
+    {
+        boundaryInfo.boundaryType = boundaryType_;
+        SetBoundaryVisual();
+    }
+
     public void UpdateBoundaryType()
     {
         Unit current = MapManager.Instance[squareUnit.mapUnitIndex];
-        Unit another = MapManager.Instance[squareUnit.mapUnitIndex + direction.GetValue()];
+        Unit another = MapManager.Instance[squareUnit.mapUnitIndex + boundaryInfo.direction.GetValue()];
 
 
 
@@ -67,14 +77,14 @@ public class SquareBoundary : MonoBehaviour
     public bool CanMove(Direction direction_)
     {
         //如果是虚线 不需要判定 直接return true
-        if (boundaryType == BoundaryType.DOTTED)
+        if (boundaryInfo.boundaryType == BoundaryType.DOTTED)
             return true;
         Vector2Int checkIndex = squareUnit.mapUnitIndex;
 
-        if (direction == Direction.LEFT && direction_ == Direction.LEFT) checkIndex += Vector2Int.left;
-        else if (direction == Direction.RIGHT && direction_ == Direction.RIGHT) checkIndex += Vector2Int.right;
-        else if (direction == Direction.DOWN && direction_ == Direction.DOWN) checkIndex += Vector2Int.down;
-        else if (direction == Direction.UP && direction_ == Direction.UP) checkIndex += Vector2Int.up;
+        if (boundaryInfo.direction == Direction.LEFT && direction_ == Direction.LEFT) checkIndex += Vector2Int.left;
+        else if (boundaryInfo.direction == Direction.RIGHT && direction_ == Direction.RIGHT) checkIndex += Vector2Int.right;
+        else if (boundaryInfo.direction == Direction.DOWN && direction_ == Direction.DOWN) checkIndex += Vector2Int.down;
+        else if (boundaryInfo.direction == Direction.UP && direction_ == Direction.UP) checkIndex += Vector2Int.up;
 
         Unit checkUnit = MapManager.Instance[checkIndex];
         //如果已经到达地图边界， 是否会存在从0进入 会从 x最大的点 出来的情况
@@ -92,4 +102,24 @@ public class SquareBoundary : MonoBehaviour
             return true;
         }
     }
+
+    public Point2Index AdjacentUnitIndex()
+    {
+        Point2Index points = new Point2Index();
+        points.p0 = boundaryInfo.minIndex;
+        switch (boundaryInfo.direction)
+        {
+            case Direction.DOWN: points.p1 = boundaryInfo.minIndex + Vector2Int.down; break;
+            case Direction.UP: points.p1 = boundaryInfo.minIndex + Vector2Int.down; break;
+            case Direction.LEFT: points.p1 = boundaryInfo.minIndex + Vector2Int.left; break;
+            case Direction.RIGHT: points.p1 = boundaryInfo.minIndex + Vector2Int.left; break;
+        }
+        return points;
+    }
+}
+
+public struct Point2Index
+{
+    public Vector2Int p0;
+    public Vector2Int p1;
 }

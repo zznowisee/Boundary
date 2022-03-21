@@ -32,9 +32,9 @@ public class BuildManager : MonoBehaviour
     private void Start()
     {
         InitSquare(Vector2Int.one, new Vector2Int(2, 2));
-        InitSquare(Vector2Int.one * 3, new Vector2Int(2, 2));
+        InitSquare(Vector2Int.one * 3, new Vector2Int(3, 3));
         InitPlayer(new Vector2Int(7, 7));
 
-        InitBox(Vector2Int.one * 2);
+        //InitBox(Vector2Int.one * 2);
     }
 }
