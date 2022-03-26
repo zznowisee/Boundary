@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d44874d70c4f644c83bef51c5c80e74, type: 3}
+  m_Name: SquarePalette
+  m_EditorClassIdentifier: 
+  playerCol: {r: 0.64705884, g: 0.2901961, b: 0.20392157, a: 1}
+  colorList:
+  - {r: 0.42352942, g: 0.6745098, b: 0.70980394, a: 1}
+  - {r: 0.85490197, g: 0.64705884, b: 0.28627452, a: 1}
+  - {r: 0.45882353, g: 0.3764706, b: 0.41568628, a: 1}

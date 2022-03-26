@@ -3,35 +3,52 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Entity : MonoBehaviour, IMoveChecker
+public class Entity : MonoBehaviour
 {
     public enum State { Idle = 0, Moving }
 
+    public Recorder Recorder
+    {
+        get { return recorder; }
+    }
+
     protected State state;
-    [HideInInspector] public Unit currentUnit;
+    protected MapUnit anchorUnit;
     protected const float moveTime = .2f;
+    protected Recorder recorder;
+    public virtual event Action<Direction> OnMoveStart;
+    public virtual event Action OnMoveEnd;
 
-    public event Action<Direction> OnMoveStart;
-    public event Action OnMoveEnd;
+    [HideInInspector] public MoveState moveState { get; set; }     //运动状态是否已经被检测过了
 
-    public MoveState moveState { get; set; }
+    protected virtual void OnEnable()
+    {
+        recorder = new Recorder(this);
+        ProcessManager.Instance.AddRecorder(recorder);
+    }
+    protected virtual void OnDisable()
+    {
+        LeaveCurrentUnit();
+        ProcessManager.Instance.RemoveRecorder(recorder);
+    }
 
     protected void LeaveCurrentUnit()
     {
-        currentUnit.currentEntity = null;
-        currentUnit = null;
+        if(anchorUnit.currentEntity == this)
+            anchorUnit.currentEntity = null;
+        anchorUnit = null;
     }
 
-    protected void EnterNewUnit(Unit newUnit)
+    protected void EnterNewUnit(MapUnit newUnit)
     {
-        currentUnit = newUnit;
-        currentUnit.currentEntity = this;
+        anchorUnit = newUnit;
+        anchorUnit.currentEntity = this;
     }
 
-    public virtual void Setup(Unit initUnit_)
+    public virtual void Setup(MapUnit initUnit_)
     {
         EnterNewUnit(initUnit_);
-        transform.position = currentUnit.transform.position;
+        transform.position = anchorUnit.transform.position;
     }
 
     public virtual void MoveTo(Direction direction)
@@ -41,8 +58,9 @@ public class Entity : MonoBehaviour, IMoveChecker
 
     public virtual IEnumerator MoveToTarget(Direction direction)
     {
+        OnMoveStart?.Invoke(direction);
         state = State.Moving;
-        Unit target = MapManager.Instance[currentUnit.index + direction.GetValue()];
+        MapUnit target = MapManager.Instance[anchorUnit.unitIndex + direction.GetValue()];
         Vector3 start = transform.position;
         Vector3 end = target.transform.position;
         LeaveCurrentUnit();
@@ -56,13 +74,62 @@ public class Entity : MonoBehaviour, IMoveChecker
         }
 
         state = State.Idle;
-        OnMoveEnd?.Invoke();
 
         EnterNewUnit(target);
+        OnMoveEnd?.Invoke();
     }
 
-    public virtual bool CanMove(Direction direction)
+    public virtual bool CanMove(Direction direction, List<Entity> CanMoveEntities)
     {
         return true;
+    }
+
+    public virtual void Teleport(Vector2Int movement)
+    {
+        Vector2Int preAnchorUnitIndex = anchorUnit.unitIndex;
+        LeaveCurrentUnit();
+        anchorUnit = MapManager.Instance[movement + preAnchorUnitIndex];
+        EnterNewUnit(anchorUnit);
+        transform.position = anchorUnit.transform.position;
+    }
+}
+
+public class Recorder
+{
+    public Entity Entity
+    {
+        get { return entity; }
+    }
+
+    private Entity entity;
+    private List<Vector2Int> movements;
+
+    public Recorder(Entity entity_)
+    {
+        entity = entity_;
+        movements = new List<Vector2Int>();
+        entity.OnMoveStart += (Direction direction) => movements.Add(direction.GetValue());
+    }
+
+    public void Undo()
+    {
+        if (movements.Count == 0)
+            return;
+
+        entity.Teleport(movements[movements.Count - 1] * -1);
+        movements.RemoveAt(movements.Count - 1);
+    }
+
+    public void Resetup()
+    {
+        entity.Teleport(GetTotalMovement());
+        movements.Clear();
+    }
+
+    private Vector2Int GetTotalMovement()
+    {
+        Vector2Int total = Vector2Int.zero;
+        movements.ForEach(move => total += move);
+        return total * -1;
     }
 }

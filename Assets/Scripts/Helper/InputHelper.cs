@@ -18,7 +18,7 @@ public static class InputHelper
         }
     }
 
-    public static Vector3 MouseWorldPosition => mainCam.ScreenToWorldPoint(Input.mousePosition);
+    public static Vector3 MouseWorldPosition => MainCam.ScreenToWorldPoint(Input.mousePosition);
     public static bool IsMouseOverUIObject => EventSystem.current.IsPointerOverGameObject();
     public static Square[] GetSquaresInWorldPosition(Vector3 position)
     {
@@ -50,5 +50,63 @@ public static class InputHelper
             case Direction.RIGHT: checkIndex = current * 2 + Vector2Int.right + Vector2Int.one; break;
         }
         return checkIndex;
+    }
+
+    public static MapUnit GetMapUnitUnderMouse()
+    {
+        RaycastHit2D[] hits = Physics2D.RaycastAll(MouseWorldPosition, Vector3.forward, float.MaxValue);
+        for (int i = 0; i < hits.Length; i++)
+        {
+            if (hits[i].collider)
+            {
+                MapUnit unit = hits[i].collider.GetComponent<MapUnit>();
+                if (unit)
+                {
+                    return unit;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Square GetSquareUnderWorldPosition()
+    {
+        RaycastHit2D[] hits = Physics2D.RaycastAll(MouseWorldPosition, Vector3.forward, float.MaxValue);
+        for (int i = 0; i < hits.Length; i++)
+        {
+            if (hits[i].collider)
+            {
+                SquareBoundary sb = hits[i].collider.GetComponent<SquareBoundary>();
+                if (sb)
+                {
+                    return sb.Square;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static bool IsTheseKeysDown(params KeyCode[] keyCodes)
+    {
+        for (int i = 0; i < keyCodes.Length; i++)
+        {
+            if (Input.GetKeyDown(keyCodes[i]))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static bool IsTheseKeysHeld(params KeyCode[] keyCodes)
+    {
+        for (int i = 0; i < keyCodes.Length; i++)
+        {
+            if (Input.GetKey(keyCodes[i]))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

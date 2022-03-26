@@ -2,35 +2,86 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Box : Entity
+public class Box : Entity, ISelectable
 {
+    private Color defaultCol;
+    private SpriteRenderer spriteRenderer;
 
-    public override bool CanMove(Direction direction)
+    private void Awake()
     {
-        Unit target = MapManager.Instance[direction.GetValue() + currentUnit.index];
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        defaultCol = spriteRenderer.color;
+    }
+
+    public bool CanMove(Direction direction, List<Entity> canMoveEntityList, Square square)
+    {
+        MapUnit target = MapManager.Instance[direction.GetValue() + anchorUnit.unitIndex];
         if (target == null)
             return false;
 
-        Vector2Int boundaryCheckIndex = InputHelper.GetBoundaryCheckIndex(direction, currentUnit.index);
+        Vector2Int boundaryCheckIndex = InputHelper.GetBoundaryCheckIndex(direction, anchorUnit.unitIndex);
         List<Square> squares = SquareManager.Instance.GetSolidBoundarySquares(boundaryCheckIndex);
 
         if (squares.Count == 0)
         {
-            MoveTo(direction);
-            return target.IsEmpty();
-        }
-        else
-        {
-            foreach(var square in squares)
+            if (target.IsEmpty())
             {
-                if (square.moveState == MoveState.CANNOT || square.moveState == MoveState.NONECHECK)
+                return true;
+            }
+            else
+            {
+                Box box = target.currentEntity as Box;
+                if (box.CanMove(direction, canMoveEntityList, square))
+                {
+                    canMoveEntityList.Add(target.currentEntity);
+                    return true;
+                }
+                else
                 {
                     return false;
                 }
             }
         }
-
-        MoveTo(direction);
+        else
+        {
+            foreach (var s in squares)
+            {
+                if (s != square)
+                    return false;
+            }
+        }
         return true;
+    }
+
+    public void Dragging()
+    {
+        MapUnit mu = InputHelper.GetMapUnitUnderMouse();
+        if (mu == null)
+            return;
+        if (!mu.IsEmpty())
+            return;
+        if (mu.unitIndex == anchorUnit.unitIndex)
+            return;
+
+        Teleport(mu.unitIndex - anchorUnit.unitIndex);
+    }
+
+    public void LeftClick()
+    {
+        spriteRenderer.color = Color.white;
+    }
+
+    public void LeftRelease()
+    {
+        spriteRenderer.color = defaultCol;
+    }
+
+    public void RightClick()
+    {
+        spriteRenderer.color = Color.white;
+    }
+    public void RightRelease()
+    {
+        Destroy(gameObject);
     }
 }

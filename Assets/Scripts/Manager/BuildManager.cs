@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BuildManager : MonoBehaviour
 {
-    [SerializeField] private ColorSO squareColors;
+    [SerializeField] private PaletteSO squareColors;
     [Header("Ô¤ÖÆÌå")]
     [SerializeField] private Square pfSquare;
     [SerializeField] private Player pfPlayer;
@@ -12,9 +12,9 @@ public class BuildManager : MonoBehaviour
 
     void InitSquare(Vector2Int lowLeftUnit, Vector2Int size)
     {
-        Unit unit = MapManager.Instance[lowLeftUnit];
+        MapUnit unit = MapManager.Instance[lowLeftUnit];
         Square square = Instantiate(pfSquare);
-        square.Setup(size, unit);
+        //square.Setup(size, unit);
     }
 
     void InitPlayer(Vector2Int index)
@@ -31,10 +31,12 @@ public class BuildManager : MonoBehaviour
 
     private void Start()
     {
-        InitSquare(Vector2Int.one, new Vector2Int(2, 2));
-        InitSquare(Vector2Int.one * 3, new Vector2Int(3, 3));
-        InitPlayer(new Vector2Int(7, 7));
+        Vector2Int offset = new Vector2Int(3, 3);
+        InitSquare(offset + new Vector2Int(1, 0), new Vector2Int(3, 3));
+        InitSquare(offset + new Vector2Int(0, 2), new Vector2Int(3, 2));
+        InitPlayer(offset + new Vector2Int(0, 4));
 
-        //InitBox(Vector2Int.one * 2);
+        InitBox(offset + new Vector2Int(0, 3));
+        InitBox(offset + new Vector2Int(3, 0));
     }
 }

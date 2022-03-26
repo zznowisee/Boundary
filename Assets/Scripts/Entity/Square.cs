@@ -6,25 +6,23 @@ using System;
 public class Square : Entity
 {
 
+    public override event Action<Direction> OnMoveStart;
+    public override event Action OnMoveEnd;
+
     public int boxNumber;
 
-    private Unit lowerLeftUnit;
-    private Vector2Int squareSize;
+    private int squareIndex;
     private Transform squareUnitsHolder;
     private Transform squareBoundariesHolder;
-
     private List<Vector2Int> pointsList;
-    private List<Vector2Int> unitsList;
 
-    [SerializeField] private Color color;
+    private Color squareCol;
     [SerializeField] private SquareBoundary pfSquareBoundary;
     [SerializeField] private SquareUnit pfSquareUnit;
 
     [HideInInspector] public List<SquareBoundary> squareBoundaries;
     [HideInInspector] public List<SquareUnit> squareUnits;
     public SquareUnit this[Vector2Int index] => GetSquareUnit(index); 
-
-    public event Action<Direction> OnMove;
 
     private void Awake()
     {
@@ -33,17 +31,25 @@ public class Square : Entity
         squareBoundaries = new List<SquareBoundary>();
         squareUnits = new List<SquareUnit>();
         pointsList = new List<Vector2Int>();
-        unitsList = new List<Vector2Int>();
     }
 
-    private void OnEnable() => SquareManager.Instance.squaresList.Add(this);
-    private void OnDisable() => SquareManager.Instance.squaresList.Remove(this);
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        SquareManager.Instance.squaresList.Add(this);
+    }
+    protected override void OnDisable()
+    {
+        ProcessManager.Instance.RemoveRecorder(recorder);
+        ProcessManager.Instance.ResetColorCheckArray(squareIndex);
+        SquareManager.Instance.squaresList.Remove(this);
+    }
 
     private SquareUnit GetSquareUnit(Vector2Int index)
     {
         for (int i = 0; i < squareUnits.Count; i++)
         {
-            if(squareUnits[i].mapUnitIndex == index)
+            if(squareUnits[i].unitIndex == index)
             {
                 return squareUnits[i];
             }
@@ -51,42 +57,37 @@ public class Square : Entity
         return null;
     }
 
-    public void Setup(Vector2Int squareSize_, Unit lowerLeftUnit_)
+    public void Setup(int squareIndex_, List<MapUnit> allUnits, Color boundaryCol_)
     {
-        squareSize = squareSize_;
-        lowerLeftUnit = lowerLeftUnit_;
-        transform.position = lowerLeftUnit.transform.position;
-        gameObject.name = squareSize_.ToString();
-        List<Unit> checkedUnits = new List<Unit>();
-        CalculateBoundary(lowerLeftUnit, GetUnitsList(), checkedUnits);
-
-        OnMove += UpdatePointsUnitsList;
+        squareIndex = squareIndex_;
+        anchorUnit = allUnits[0];
+        squareCol = boundaryCol_;
+        transform.position = anchorUnit.transform.position;
+        CalculateBoundary(anchorUnit, allUnits, new List<MapUnit>());
+        OnMoveStart += UpdatePointsUnitsList;
     }
 
-    void UpdatePointsUnitsList(Direction dir)
+    public override void Teleport(Vector2Int movement)
     {
-        for (int i = 0; i < unitsList.Count; i++)
-            unitsList[i] += dir.GetValue();
+        //update indices
         for (int i = 0; i < pointsList.Count; i++)
-            pointsList[i] += dir.GetValue();
+            pointsList[i] += movement;
+        for (int i = 0; i < squareUnits.Count; i++)
+            squareUnits[i].unitIndex += movement;
+        for (int i = 0; i < squareBoundaries.Count; i++)
+            squareBoundaries[i].Teleport(movement);
+
+        anchorUnit = MapManager.Instance[movement + anchorUnit.unitIndex];
+        transform.position = anchorUnit.transform.position;
     }
 
-    private List<Unit> GetUnitsList()
+    void UpdatePointsUnitsList(Direction direction)
     {
-        List<Unit> units = new List<Unit>();
-        Vector2Int maxIndex = lowerLeftUnit.index + squareSize - Vector2Int.one;
-        for (int y = lowerLeftUnit.index.y; y <= maxIndex.y; y++)
-        {
-            for (int x = lowerLeftUnit.index.x; x <= maxIndex.x; x++)
-            {
-                Unit unit = MapManager.Instance[x, y];
-                if (unit) units.Add(unit);
-            }
-        }
-        return units;
+        for (int i = 0; i < pointsList.Count; i++)
+            pointsList[i] += direction.GetValue();
     }
 
-    private void CheckPoint(Unit baseUnit, Unit checkUnit, List<Unit> squareUnits, List<Unit> checkedUnits, Direction direction, SquareUnit su)
+    private void CheckPoint(MapUnit baseUnit, MapUnit checkUnit, List<MapUnit> squareUnits, List<MapUnit> checkedUnits, Direction direction, SquareUnit su)
     {
         Lattice<Point> map = MapManager.Instance.map;
 
@@ -96,20 +97,20 @@ public class Square : Entity
             switch (direction)
             {
                 case Direction.UP:
-                    p0 = map[baseUnit.index + Vector2Int.up];
-                    p1 = map[baseUnit.index + Vector2Int.one];
+                    p0 = map[baseUnit.unitIndex + Vector2Int.up];
+                    p1 = map[baseUnit.unitIndex + Vector2Int.one];
                     break;
                 case Direction.DOWN:
-                    p0 = map[baseUnit.index];
-                    p1 = map[baseUnit.index + Vector2Int.right];
+                    p0 = map[baseUnit.unitIndex];
+                    p1 = map[baseUnit.unitIndex + Vector2Int.right];
                     break;
                 case Direction.LEFT:
-                    p0 = map[baseUnit.index];
-                    p1 = map[baseUnit.index + Vector2Int.up];
+                    p0 = map[baseUnit.unitIndex];
+                    p1 = map[baseUnit.unitIndex + Vector2Int.up];
                     break;
                 case Direction.RIGHT:
-                    p0 = map[baseUnit.index + Vector2Int.right];
-                    p1 = map[baseUnit.index + Vector2Int.one];
+                    p0 = map[baseUnit.unitIndex + Vector2Int.right];
+                    p1 = map[baseUnit.unitIndex + Vector2Int.one];
                     break;
             }
             //refac
@@ -125,19 +126,18 @@ public class Square : Entity
         }
     }
 
-    SquareUnit AddNewSquareUnit(Unit unit)
+    private SquareUnit AddNewSquareUnit(MapUnit unit)
     {
         SquareUnit su = Instantiate(pfSquareUnit, unit.transform.position, Quaternion.identity, squareUnitsHolder);
-        su.Setup(this, unit.index);
+        su.Setup(this, unit.unitIndex, squareCol);
         Vector2Int[] indices = new Vector2Int[] 
         { 
-            unit.index, 
-            unit.index + Vector2Int.right, 
-            unit.index + Vector2Int.up, 
-            unit.index + Vector2Int.one 
+            unit.unitIndex, 
+            unit.unitIndex + Vector2Int.right, 
+            unit.unitIndex + Vector2Int.up, 
+            unit.unitIndex + Vector2Int.one 
         };
 
-        unitsList.Add(unit.index);
 
         for (int i = 0; i < indices.Length; i++)
             if (!pointsList.Contains(indices[i]))
@@ -146,17 +146,17 @@ public class Square : Entity
         return su;
     }
 
-    private void CalculateBoundary(Unit current, List<Unit> units, List<Unit> checkedUnits)
+    private void CalculateBoundary(MapUnit current, List<MapUnit> units, List<MapUnit> checkedUnits)
     {
         checkedUnits.Add(current);
 
         SquareUnit su = AddNewSquareUnit(current);
         squareUnits.Add(su);
 
-        Unit up = MapManager.Instance[current.index + Vector2Int.up];
-        Unit down = MapManager.Instance[current.index + Vector2Int.down];
-        Unit left = MapManager.Instance[current.index + Vector2Int.left];
-        Unit right = MapManager.Instance[current.index + Vector2Int.right];
+        MapUnit up = MapManager.Instance[current.unitIndex + Vector2Int.up];
+        MapUnit down = MapManager.Instance[current.unitIndex + Vector2Int.down];
+        MapUnit left = MapManager.Instance[current.unitIndex + Vector2Int.left];
+        MapUnit right = MapManager.Instance[current.unitIndex + Vector2Int.right];
 
         CheckPoint(current, up, units, checkedUnits, Direction.UP, su);
         CheckPoint(current, down, units, checkedUnits, Direction.DOWN, su);
@@ -171,18 +171,18 @@ public class Square : Entity
         SquareBoundary squareBoundary = Instantiate(pfSquareBoundary, (p0.position + p1.position) / 2f,
                                                            p0.index.y != p1.index.y ? Quaternion.Euler(new Vector3(0, 0, 90f)) : Quaternion.identity,
                                                            squareBoundariesHolder);
-        squareBoundary.Setup(this, direction, color, su, p0.index, p1.index);
+        squareBoundary.Setup(this, direction, squareCol, su, p0.index, p1.index);
         squareBoundaries.Add(squareBoundary);
     }
 
-    public override bool CanMove(Direction direction)
+    public override bool CanMove(Direction direction, List<Entity> canMoveEntityList)
     {
         foreach(var boundary in squareBoundaries)
         {
             if (boundary.boundaryInfo.direction.GetDirectionType() != direction.GetDirectionType())
                 continue;
 
-            if (!boundary.CanMove(direction))
+            if (!boundary.CanMove(direction, canMoveEntityList))
             {
                 moveState = MoveState.CANNOT;
                 return false;
@@ -195,9 +195,9 @@ public class Square : Entity
 
     public override IEnumerator MoveToTarget(Direction direction)
     {
-        OnMove?.Invoke(direction);
+        OnMoveStart?.Invoke(direction);
         state = State.Moving;
-        Unit target = MapManager.Instance[lowerLeftUnit.index + direction.GetValue()];
+        MapUnit target = MapManager.Instance[anchorUnit.unitIndex + direction.GetValue()];
         Vector3 start = transform.position;
         Vector3 end = target.transform.position;
 
@@ -211,28 +211,56 @@ public class Square : Entity
         }
 
         state = State.Idle;
-        lowerLeftUnit = target;
+        anchorUnit = target;
+    }
+
+    private int GetBoxNumber()
+    {
+        int number = 0;
+        for (int i = 0; i < squareUnits.Count; i++)
+        {
+            MapUnit unit = MapManager.Instance[squareUnits[i].unitIndex];
+            Box box = unit.currentEntity as Box;
+            if (box)
+            {
+                number++;
+            }
+        }
+        return number;
     }
 
     public bool ContainsBoundary(SquareBoundary sb)
     {
-        if (pointsList.Contains(sb.boundaryInfo.minIndex) && pointsList.Contains(sb.boundaryInfo.maxIndex) && (unitsList.Contains(sb.AdjacentUnitIndex().p0) || unitsList.Contains(sb.AdjacentUnitIndex().p1)))
-        {
-            print(gameObject.name + " Contains " + $"{sb.boundaryInfo.minIndex},{sb.boundaryInfo.maxIndex}");
-            return true;
-        }
-        else
-        {
-            if(!pointsList.Contains(sb.boundaryInfo.minIndex) || !pointsList.Contains(sb.boundaryInfo.maxIndex))
-            {
-                print("Not contains points index");
-            }
-            if((!unitsList.Contains(sb.AdjacentUnitIndex().p0) && !unitsList.Contains(sb.AdjacentUnitIndex().p1)))
-            {
-                print("Not contains unit");
-            }
-            print(gameObject.name + " Not Contains " + $"{sb.boundaryInfo.minIndex},{sb.boundaryInfo.maxIndex}");
-        }
+        return pointsList.Contains(sb.boundaryInfo.minIndex) && pointsList.Contains(sb.boundaryInfo.maxIndex) && (UnitsIndicesContains(sb.AdjacentUnitIndex().p0) || UnitsIndicesContains(sb.AdjacentUnitIndex().p1));
+    }
+
+    private bool UnitsIndicesContains(Vector2Int index)
+    {
+        for (int i = 0; i < squareUnits.Count; i++)
+            if (squareUnits[i].unitIndex == index)
+                return true;
+
         return false;
+    }
+
+    public void FinishOnceMovement()
+    {
+        moveState = MoveState.NONECHECK;
+        boxNumber = GetBoxNumber();
+    }
+
+    public void Select()
+    {
+        squareBoundaries.ForEach(squareBoundary => squareBoundary.Highlighting());
+    }
+
+    public void CancelSelect()
+    {
+        squareBoundaries.ForEach(squareBoundary => squareBoundary.Normal());
+    }
+
+    public void ResetSquareBoundaries()
+    {
+        squareBoundaries.ForEach(squareBoundary => squareBoundary.SetBoundaryType(BoundaryType.SOLID));
     }
 }

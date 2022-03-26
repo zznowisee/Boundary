@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+[System.Serializable]
 public struct BoundaryInfo
 {
     public Vector2Int minIndex;
@@ -11,38 +11,50 @@ public struct BoundaryInfo
     public BoundaryType boundaryType;
 }
 
-public class SquareBoundary : MonoBehaviour
+public class SquareBoundary : MonoBehaviour, ISelectable
 {
+    private Square square;
+    private SquareUnit squareUnit;
     private SpriteRenderer spriteRenderer;
+    private Color squareCol;
     [SerializeField] private Material dottedMat;
     [SerializeField] private Material solidMat;
-    [HideInInspector] public Square square;
 
-    [HideInInspector] public SquareUnit squareUnit;
     [HideInInspector] public Vector2Int pointsIndex { get { return boundaryInfo.minIndex + boundaryInfo.maxIndex; } }
     public BoundaryInfo boundaryInfo;
+
+    public Square Square
+    {
+        get { return square; }
+    }
+
+    public bool selected { get; set; }
 
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    public void Setup(Square square_, Direction direction_, Color color_, SquareUnit squareUnit_, Vector2Int minIndex_, Vector2Int maxIndex_)
+    public void Setup(Square square_, Direction direction_, Color squareCol_, SquareUnit squareUnit_, Vector2Int minIndex_, Vector2Int maxIndex_)
     {
         square = square_;
         boundaryInfo.direction = direction_;
-        spriteRenderer.color = color_;
+        squareCol = squareCol_;
+        spriteRenderer.color = squareCol_;
         squareUnit = squareUnit_;
         boundaryInfo.boundaryType = BoundaryType.SOLID;
         SetBoundaryVisual();
-        square.OnMove += (Direction dir) =>
-        {
-            boundaryInfo.minIndex += dir.GetValue();
-            boundaryInfo.maxIndex += dir.GetValue();
-        };
         boundaryInfo = new BoundaryInfo() { boundaryType = BoundaryType.SOLID, direction = direction_, maxIndex = maxIndex_, minIndex = minIndex_ };
+
+        square.OnMoveStart += (Direction dir) => Teleport(dir.GetValue());
     }
     
+    public void Teleport(Vector2Int movement)
+    {
+        boundaryInfo.minIndex += movement;
+        boundaryInfo.maxIndex += movement;
+    }
+
     private void SetBoundaryVisual()
     {
         switch (boundaryInfo.boundaryType)
@@ -62,42 +74,45 @@ public class SquareBoundary : MonoBehaviour
         SetBoundaryVisual();
     }
 
-    public void UpdateBoundaryType()
-    {
-        Unit current = MapManager.Instance[squareUnit.mapUnitIndex];
-        Unit another = MapManager.Instance[squareUnit.mapUnitIndex + boundaryInfo.direction.GetValue()];
 
-
-
-        //p0 p1上是否有别的边界
-        //p0 p1是否在别的边界内
-        SetBoundaryVisual();
-    }
-
-    public bool CanMove(Direction direction_)
+    public bool CanMove(Direction direction_, List<Entity> canMoveEntityList)
     {
         //如果是虚线 不需要判定 直接return true
         if (boundaryInfo.boundaryType == BoundaryType.DOTTED)
             return true;
-        Vector2Int checkIndex = squareUnit.mapUnitIndex;
 
-        if (boundaryInfo.direction == Direction.LEFT && direction_ == Direction.LEFT) checkIndex += Vector2Int.left;
-        else if (boundaryInfo.direction == Direction.RIGHT && direction_ == Direction.RIGHT) checkIndex += Vector2Int.right;
-        else if (boundaryInfo.direction == Direction.DOWN && direction_ == Direction.DOWN) checkIndex += Vector2Int.down;
-        else if (boundaryInfo.direction == Direction.UP && direction_ == Direction.UP) checkIndex += Vector2Int.up;
+        Vector2Int checkIndex = squareUnit.unitIndex;
+        if (boundaryInfo.direction == direction_)
+            checkIndex += direction_.GetValue();
 
-        Unit checkUnit = MapManager.Instance[checkIndex];
+        MapUnit checkUnit = MapManager.Instance[checkIndex];
         //如果已经到达地图边界， 是否会存在从0进入 会从 x最大的点 出来的情况
         if (checkUnit == null)
         {
-            print("Check Unit Is Null");
             return false;
         }
         else
         {
             if (!checkUnit.IsEmpty())
             {
-                return checkUnit.currentEntity.CanMove(direction_);
+                if(checkUnit.currentEntity is Player)
+                {
+                    return true;
+                }
+
+                if(checkUnit.currentEntity is Box)
+                {
+                    Box box = checkUnit.currentEntity as Box;
+                    if(box.CanMove(direction_, canMoveEntityList, square))
+                    {
+                        canMoveEntityList.Add(box);
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
             }
             return true;
         }
@@ -115,6 +130,50 @@ public class SquareBoundary : MonoBehaviour
             case Direction.RIGHT: points.p1 = boundaryInfo.minIndex + Vector2Int.left; break;
         }
         return points;
+    }
+
+    public void LeftClick()
+    {
+        print($"Click on { square.name }");
+        square.Select();
+    }
+
+    public void RightClick()
+    {
+        square.Select();
+    }
+
+    public void LeftRelease()
+    {
+        print("Left release");
+        square.CancelSelect();
+    }
+
+    public void Dragging()
+    {
+        MapUnit newUnit = InputHelper.GetMapUnitUnderMouse();
+        if (newUnit == null)
+            return;
+
+        if (newUnit.unitIndex == squareUnit.unitIndex)
+            return;
+
+        square.Teleport(newUnit.unitIndex - squareUnit.unitIndex);
+    }
+
+    public void Highlighting()
+    {
+        spriteRenderer.color = Color.white;
+    }
+
+    public void Normal()
+    {
+        spriteRenderer.color = squareCol;
+    }
+
+    public void RightRelease()
+    {
+        Destroy(square.gameObject);
     }
 }
 

@@ -57,23 +57,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Manager\MapManager.cs" />
+    <Compile Include="Assets\Scripts\Manager\ProcessManager.cs" />
+    <Compile Include="Assets\Scripts\Helper\Singleton.cs" />
     <Compile Include="Assets\Scripts\Helper\InputHelper.cs" />
     <Compile Include="Assets\Scripts\Entity\Box.cs" />
+    <Compile Include="Assets\Scripts\Interface\ISelectable.cs" />
     <Compile Include="Assets\Scripts\Map\Lattice.cs" />
     <Compile Include="Assets\Scripts\Entity\Player.cs" />
     <Compile Include="Assets\Scripts\Test.cs" />
     <Compile Include="Assets\Scripts\Entity\SquareBoundary.cs" />
-    <Compile Include="Assets\Scripts\Map\Unit.cs" />
+    <Compile Include="Assets\Scripts\Map\MapUnit.cs" />
     <Compile Include="Assets\Scripts\Entity\Square.cs" />
+    <Compile Include="Assets\Scripts\Manager\UIManager.cs" />
     <Compile Include="Assets\Scripts\Entity\SquareUnit.cs" />
     <Compile Include="Assets\Scripts\Entity\Entity.cs" />
     <Compile Include="Assets\Scripts\Manager\SquareManager.cs" />
     <Compile Include="Assets\Scripts\Helper\Utils.cs" />
-    <Compile Include="Assets\Scripts\ScriptableObject\ColorSO.cs" />
+    <Compile Include="Assets\Scripts\ScriptableObject\PaletteSO.cs" />
     <Compile Include="Assets\Scripts\Manager\BuildManager.cs" />
     <Compile Include="Assets\Scripts\Map\Grid.cs" />
     <Compile Include="Assets\Scripts\Interface\IMoveChecker.cs" />
-    <Compile Include="Assets\Scripts\Entity\BoundaryDirection.cs" />
+    <Compile Include="Assets\Scripts\Entity\BuildGhost.cs" />
+    <Compile Include="Assets\Scripts\Entity\State.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Package\TextMesh Pro\Shaders\TMPro.cginc" />

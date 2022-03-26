@@ -14,6 +14,11 @@ public class SquareManager : MonoBehaviour
         dottedBoundariesList = new List<SquareBoundary>();
     }
 
+    private void Start()
+    {
+        PlayerFinishMove();
+    }
+
     public List<Square> GetSolidBoundarySquares(Vector2Int pointsIndex)
     {
         List<Square> squares = new List<Square>();
@@ -37,23 +42,21 @@ public class SquareManager : MonoBehaviour
     {
         for (int i = 0; i < squaresList.Count; i++)
         {
-            squaresList[i].moveState = MoveState.NONECHECK;
+            squaresList[i].FinishOnceMovement();
         }
-        UpdateCoincidenceArea();
+        DetectCoincidenceBoundary();
     }
 
-    private void Update()
+    public void DetectCoincidenceBoundary()
     {
-       //UpdateCoincidenceArea();
-    }
-
-    public void UpdateCoincidenceArea()
-    {
+        //reset all dotted boundary
         for (int i = 0; i < dottedBoundariesList.Count; i++)
         {
             dottedBoundariesList[i].SetBoundaryType(BoundaryType.SOLID);
         }
         dottedBoundariesList.Clear();
+
+        //detect all dotted boundary
         for (int i = 0; i < squaresList.Count; i++)
         {
             Square current = squaresList[i];
@@ -62,17 +65,22 @@ public class SquareManager : MonoBehaviour
                 SquareBoundary sb = current.squareBoundaries[j];
                 for (int k = 0; k < squaresList.Count; k++)
                 {
-                    if (k != i)
+                    if (k == i)
+                        continue;
+
+                    if (squaresList[k].ContainsBoundary(sb) && current.boxNumber <= squaresList[k].boxNumber)
                     {
-                        if (squaresList[k].ContainsBoundary(sb) && current.boxNumber <= squaresList[k].boxNumber)
-                        {
-                            print(sb.square.gameObject.name);
-                            sb.SetBoundaryType(BoundaryType.DOTTED);
-                            dottedBoundariesList.Add(sb);
-                        }
+                        sb.SetBoundaryType(BoundaryType.DOTTED);
+                        dottedBoundariesList.Add(sb);
                     }
                 }
             }
         }
+    }
+
+    public void ResetAll()
+    {
+        squaresList.ForEach(square => square.ResetSquareBoundaries());
+        dottedBoundariesList.Clear();
     }
 }

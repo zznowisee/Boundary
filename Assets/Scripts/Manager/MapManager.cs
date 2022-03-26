@@ -9,18 +9,24 @@ public class MapManager : MonoBehaviour
     public static MapManager Instance { get; private set; }
 
     [Header("Map参数")]
-    [SerializeField] Vector2Int mapSize;
+    [SerializeField] private Vector2Int mapSize;
     [SerializeField] private float cellSize;
+    [SerializeField] private bool indexDebug;
+    [SerializeField] private Color unitDefaultCol;
     [Range(0, 1f)]
     [SerializeField] private float slotOutlinePercent = .05f;
     [Header("预制体")]
-    [SerializeField] private Unit pfUnit;
+    [SerializeField] private MapUnit pfUnit;
 
     public Lattice<Point> map;
-    public Unit[,] units;
+    public MapUnit[,] units;
 
-    public Unit this[Vector2Int index] => GetUnit(index.x, index.y);
-    public Unit this[int x, int y] => GetUnit(x, y);
+    public Vector2Int MapMiddleIndex
+    {
+        get { return mapSize / 2; }
+    }
+    public MapUnit this[Vector2Int index] => GetUnit(index.x, index.y);
+    public MapUnit this[int x, int y] => GetUnit(x, y);
     private void Awake()
     {
         Instance = this;
@@ -38,24 +44,22 @@ public class MapManager : MonoBehaviour
         holder.transform.parent = transform;
 
         Vector2 origin = new Vector2((mapSize.x - 1) * cellSize, (mapSize.y - 1)* cellSize) / -2f;
-        print(origin);
         map = new Lattice<Point>(mapSize.x, mapSize.y, cellSize, origin, (Lattice<Point> g, int x, int y) => new Point(x, y, g));
-        units = new Unit[mapSize.x - 1, mapSize.y - 1];
+        units = new MapUnit[mapSize.x - 1, mapSize.y - 1];
 
-        for (int y = 0; y < map.GetWidth() - 1; y++)
+        for (int y = 0; y < map.GetHeight() - 1; y++)
         {
-            for (int x = 0; x < map.GetHeight() - 1; x++)
+            for (int x = 0; x < map.GetWidth() - 1; x++)
             {
-                Unit unit = Instantiate(pfUnit, map.GetCenterPosition(x, y), Quaternion.identity, holder);
+                MapUnit unit = Instantiate(pfUnit, map.GetCenterPosition(x, y), Quaternion.identity, holder);
                 unit.transform.localScale = Vector3.one * (1 - slotOutlinePercent) * cellSize;
-                unit.Setup(new Vector2Int(x, y));
+                unit.Setup(new Vector2Int(x, y), unitDefaultCol);
                 units[x, y] = unit;
-                unit.transform.Find("index").GetComponent<TextMeshPro>().text = $"{x}.{y}";
             }
         }
     }
 
-    private Unit GetUnit(int x, int y)
+    private MapUnit GetUnit(int x, int y)
     {
         if(x >= 0 && x < units.GetLength(0) && y >= 0 && y < units.GetLength(1))
         {

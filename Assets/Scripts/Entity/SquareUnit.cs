@@ -4,20 +4,29 @@ using UnityEngine;
 
 public class SquareUnit : MonoBehaviour
 {
+    private SpriteRenderer spriteRenderer;
+
     [HideInInspector] public Square square;
-    [HideInInspector] public Vector2Int mapUnitIndex;
+    public Vector2Int unitIndex;
     [HideInInspector] public SquareUnitType squareUnitType;
 
-    public void Setup(Square square_, Vector2Int index_)
+    private void Awake()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    public void Setup(Square square_, Vector2Int index_, Color squareUnitCol_)
     {
         square = square_;
-        mapUnitIndex = index_;
-        square.OnMove += (Direction dir) => mapUnitIndex += dir.GetValue();
+        unitIndex = index_;
+        square.OnMoveStart += (Direction dir) => unitIndex += dir.GetValue();
+        squareUnitCol_.a = .1f;
+        spriteRenderer.color = squareUnitCol_;
     }
 
     public bool FindBox()
     {
-        Unit unit = MapManager.Instance[mapUnitIndex];
+        MapUnit unit = MapManager.Instance[unitIndex];
         if(unit.currentEntity != null)
         {
             return unit.currentEntity as Box != null;
