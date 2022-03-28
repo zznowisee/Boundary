@@ -19,7 +19,7 @@ public class Entity : MonoBehaviour
     public virtual event Action<Direction> OnMoveStart;
     public virtual event Action OnMoveEnd;
 
-    [HideInInspector] public MoveState moveState { get; set; }     //运动状态是否已经被检测过了
+    public MoveState moveState;    //运动状态是否已经被检测过了
 
     protected virtual void OnEnable()
     {

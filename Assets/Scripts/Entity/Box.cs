@@ -15,10 +15,10 @@ public class Box : Entity, ISelectable
 
     public bool CanMove(Direction direction, List<Entity> canMoveEntityList, Square square)
     {
+        print("Running Box - CanMove");
         MapUnit target = MapManager.Instance[direction.GetValue() + anchorUnit.unitIndex];
-        if (target == null)
-            return false;
-
+        if (target == null) return false;
+        if (!target.Active) return false;
         Vector2Int boundaryCheckIndex = InputHelper.GetBoundaryCheckIndex(direction, anchorUnit.unitIndex);
         List<Square> squares = SquareManager.Instance.GetSolidBoundarySquares(boundaryCheckIndex);
 
@@ -30,6 +30,9 @@ public class Box : Entity, ISelectable
             }
             else
             {
+                if (!target.Active)
+                    return false;
+
                 Box box = target.currentEntity as Box;
                 if (box.CanMove(direction, canMoveEntityList, square))
                 {
@@ -55,7 +58,7 @@ public class Box : Entity, ISelectable
 
     public void Dragging()
     {
-        MapUnit mu = InputHelper.GetMapUnitUnderMouse();
+        MapUnit mu = InputHelper.GetMapUnitUnderMousePosition();
         if (mu == null)
             return;
         if (!mu.IsEmpty())

@@ -52,7 +52,7 @@ public static class InputHelper
         return checkIndex;
     }
 
-    public static MapUnit GetMapUnitUnderMouse()
+    public static MapUnit GetMapUnitUnderMousePosition()
     {
         RaycastHit2D[] hits = Physics2D.RaycastAll(MouseWorldPosition, Vector3.forward, float.MaxValue);
         for (int i = 0; i < hits.Length; i++)

@@ -26,7 +26,6 @@ public class MapManager : MonoBehaviour
         get { return mapSize / 2; }
     }
     public MapUnit this[Vector2Int index] => GetUnit(index.x, index.y);
-    public MapUnit this[int x, int y] => GetUnit(x, y);
     private void Awake()
     {
         Instance = this;

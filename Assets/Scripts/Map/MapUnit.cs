@@ -6,17 +6,25 @@ public class MapUnit : MonoBehaviour
 {
     [HideInInspector] public Vector2Int unitIndex;
     public Entity currentEntity;
+
+    private SpriteRenderer spriteRenderer;
+    private Color defaultCol;
+    private bool active;
+    private bool selected;
+
     public bool Selected
     {
         get { return selected; }
     }
 
-    private SpriteRenderer spriteRenderer;
-    private bool selected;
-    private Color defaultCol;
+    public bool Active
+    {
+        get { return active; }
+    }
 
     public void Setup(Vector2Int index_, Color defaultCol_)
     {
+        active = true;
         unitIndex = index_;
         defaultCol = defaultCol_;
         gameObject.name = $"{unitIndex.x}-{unitIndex.y}";
@@ -36,5 +44,12 @@ public class MapUnit : MonoBehaviour
     {
         selected = false;
         spriteRenderer.color = defaultCol;
+    }
+
+    public void SetActive()
+    {
+        active = !active;
+        CancelSelect();
+        spriteRenderer.enabled = active;
     }
 }

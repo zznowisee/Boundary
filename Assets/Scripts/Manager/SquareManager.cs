@@ -38,6 +38,11 @@ public class SquareManager : MonoBehaviour
         return squares;
     }
 
+    public void PlayerFinishCheck()
+    {
+        squaresList.ForEach(square => square.moveState = MoveState.NONECHECK);
+    }
+
     public void PlayerFinishMove()
     {
         for (int i = 0; i < squaresList.Count; i++)

@@ -177,7 +177,8 @@ public class Square : Entity
 
     public override bool CanMove(Direction direction, List<Entity> canMoveEntityList)
     {
-        foreach(var boundary in squareBoundaries)
+        print("Running Square - CanMove");
+        foreach (var boundary in squareBoundaries)
         {
             if (boundary.boundaryInfo.direction.GetDirectionType() != direction.GetDirectionType())
                 continue;
@@ -220,10 +221,13 @@ public class Square : Entity
         for (int i = 0; i < squareUnits.Count; i++)
         {
             MapUnit unit = MapManager.Instance[squareUnits[i].unitIndex];
-            Box box = unit.currentEntity as Box;
-            if (box)
+            if(unit != null)
             {
-                number++;
+                Box box = unit.currentEntity as Box;
+                if (box)
+                {
+                    number++;
+                }
             }
         }
         return number;

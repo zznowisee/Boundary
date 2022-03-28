@@ -151,7 +151,7 @@ public class SquareBoundary : MonoBehaviour, ISelectable
 
     public void Dragging()
     {
-        MapUnit newUnit = InputHelper.GetMapUnitUnderMouse();
+        MapUnit newUnit = InputHelper.GetMapUnitUnderMousePosition();
         if (newUnit == null)
             return;
 

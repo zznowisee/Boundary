@@ -9,6 +9,7 @@ public class Player : Entity, ISelectable
     private SpriteRenderer spriteRenderer;
     public override event Action<Direction> OnMoveStart;
     public override event Action OnMoveEnd;
+    public event Action OnCheckEnd;
 
     private void Awake()
     {
@@ -28,6 +29,7 @@ public class Player : Entity, ISelectable
     {
         base.Setup(initUnit_);
         OnMoveEnd += SquareManager.Instance.PlayerFinishMove;
+        OnCheckEnd += SquareManager.Instance.PlayerFinishCheck;
     }
 
     public override IEnumerator MoveToTarget(Direction direction)
@@ -58,10 +60,10 @@ public class Player : Entity, ISelectable
         if (state == State.Moving)
             return;
 
-        if (Input.GetKeyDown(KeyCode.W)) MoveTo(Direction.UP);
-        else if (Input.GetKeyDown(KeyCode.S)) MoveTo(Direction.DOWN);
-        else if (Input.GetKeyDown(KeyCode.A)) MoveTo(Direction.LEFT);
-        else if (Input.GetKeyDown(KeyCode.D)) MoveTo(Direction.RIGHT);
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) MoveTo(Direction.UP);
+        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) MoveTo(Direction.DOWN);
+        else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) MoveTo(Direction.LEFT);
+        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) MoveTo(Direction.RIGHT);
     }
 
     public override void MoveTo(Direction direction)
@@ -78,13 +80,15 @@ public class Player : Entity, ISelectable
             ProcessManager.Instance.UndoHelper.Record(members);
             StartCoroutine(MoveToTarget(direction));
         }
+        OnCheckEnd?.Invoke();
     }
 
     public override bool CanMove(Direction direction, List<Entity> canMoveEntityList)
     {
+        print("Running player - CanMove");
         MapUnit target = MapManager.Instance[direction.GetValue() + anchorUnit.unitIndex];
         if (target == null) return false;
-
+        if (!target.Active) return false;
         Vector2Int boundaryCheckIndex = InputHelper.GetBoundaryCheckIndex(direction, anchorUnit.unitIndex);
         List<Square> squares = SquareManager.Instance.GetSolidBoundarySquares(boundaryCheckIndex);
         if (squares.Count == 0)
@@ -93,7 +97,6 @@ public class Player : Entity, ISelectable
         }
         else
         {
-            print("squares is not zero");
             foreach(var square in squares)
             {
                 if(square.moveState == MoveState.CANNOT)
@@ -104,6 +107,7 @@ public class Player : Entity, ISelectable
                 {
                     if (!square.CanMove(direction, canMoveEntityList))
                     {
+                        print("can not move");
                         square.moveState = MoveState.CANNOT;
                         return false;
                     }
@@ -140,7 +144,7 @@ public class Player : Entity, ISelectable
 
     public void Dragging()
     {
-        MapUnit newUnit = InputHelper.GetMapUnitUnderMouse();
+        MapUnit newUnit = InputHelper.GetMapUnitUnderMousePosition();
         if (newUnit == null)
             return;
         if (!newUnit.IsEmpty())

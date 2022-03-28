@@ -30,6 +30,7 @@ public class ProcessManager : Singleton<ProcessManager>
     private KeyCode? currentCreateKeyCode;
     private ISelectable currentSelecting;
     private List<MapUnit> selectingUnitList;
+    private List<MapUnit> unactiveUnitList;
     private List<Recorder> recorders;
     private UndoHelper undoHelper;
     private bool[] squareColorCheckArray;
@@ -55,6 +56,7 @@ public class ProcessManager : Singleton<ProcessManager>
         recorders = new List<Recorder>();
         selectingUnitList = new List<MapUnit>();
         undoHelper = new UndoHelper();
+        unactiveUnitList = new List<MapUnit>();
         squareColorCheckArray = new bool[palette.colorList.Count];
     }
 
@@ -104,13 +106,10 @@ public class ProcessManager : Singleton<ProcessManager>
 
     private void HandleUndo()
     {
-        if (InputHelper.IsTheseKeysHeld(KeyCode.LeftControl))
+        if (Input.GetKeyDown(KeyCode.Z))
         {
-            if (Input.GetKeyDown(KeyCode.Z))
-            {
-                Undo();
-                return;
-            }
+            Undo();
+            return;
         }
     }
 
@@ -142,9 +141,12 @@ public class ProcessManager : Singleton<ProcessManager>
                 return;
             }
 
-            MapUnit unit = InputHelper.GetMapUnitUnderMouse();
+            MapUnit unit = InputHelper.GetMapUnitUnderMousePosition();
             if (unit != null)
             {
+                if (!unit.Active)
+                    return;
+
                 if (unit.Selected)
                 {
                     unit.CancelSelect();
@@ -167,13 +169,30 @@ public class ProcessManager : Singleton<ProcessManager>
             {
                 operateType = OperateType.SELECTING;
                 currentSelecting.RightClick();
+                return;
+            }
+
+            MapUnit unit = InputHelper.GetMapUnitUnderMousePosition();
+            if(unit != null)
+            {
+                if (unit.IsEmpty())
+                {
+                    unit.SetActive();
+                    if (!unit.Active)
+                        unactiveUnitList.Add(unit);
+                    else
+                        unactiveUnitList.Remove(unit);
+
+                    if (selectingUnitList.Contains(unit))
+                        selectingUnitList.Remove(unit);
+                }
             }
         }
     }
 
     private void CreatingState()
     {
-        MapUnit mapUnit = InputHelper.GetMapUnitUnderMouse();
+        MapUnit mapUnit = InputHelper.GetMapUnitUnderMousePosition();
         if (mapUnit != null)
         {
             createGhost.gameObject.transform.position = mapUnit.transform.position;
@@ -244,6 +263,9 @@ public class ProcessManager : Singleton<ProcessManager>
             Destroy(recorders[i].Entity.gameObject);
         for (int i = 0; i < squareColorCheckArray.Length; i++)
             squareColorCheckArray[i] = false;
+        for (int i = 0; i < unactiveUnitList.Count; i++)
+            unactiveUnitList[i].SetActive();
+        unactiveUnitList.Clear();
         ClearSelecting();
     }
 
